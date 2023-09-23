@@ -12,3 +12,4 @@ langchain==0.0.300
 openai==0.28.0
 PyYAML==6.0.1
 lxml==4.9.3
+PyVirtualDisplay==3.0
