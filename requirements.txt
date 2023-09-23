@@ -1,6 +1,6 @@
 streamlit==1.27.0
 selenium==4.12.0
-webdriver_manager
+webdriver-manager==4.0.0
 plotly==5.17.0
 streamlit-extras==0.3.2
 pandas==2.1.1
