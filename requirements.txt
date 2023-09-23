@@ -9,4 +9,4 @@ streamlit-lottie==0.0.5
 PyPDF2==3.0.1
 wordcloud==1.9.2
 langchain==0.0.300
-
+openai==0.28.0
