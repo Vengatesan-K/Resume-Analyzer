@@ -7,6 +7,15 @@ import time
 from selenium.webdriver.chrome.service import Service
 import pandas as pd
 import re
+import streamlit as st
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+import pandas as pd
+import re
 import plotly.express as px
 from streamlit_extras.colored_header import colored_header
 import pandas as pd
@@ -42,40 +51,46 @@ if st.button("Scrape Jobs"):
     options = Options()
     options.add_argument('--disable-gpu')
     options.add_argument('--headless')
-    st.code(driver.page_source)
-    with get_driver() as driver:
+    
+    with webdriver.Chrome(ChromeDriverManager().install(), options=options) as driver:
         driver.get(url)
-        time.sleep(5)
         
-        job_count_elements = driver.find_elements("css selector", ".results-context-header__job-count")
-        if job_count_elements:
-            y = job_count_elements[0].text
-            y = re.sub(r'[^\d]', '', y)
-            n = pd.to_numeric(y)
-            
-            data = []  # Initialize a list to store job data
-            
-            try:
-                for i in range(n):
-                    company = driver.find_elements("css selector", '.base-search-card__subtitle')[i].text
-                    title = driver.find_elements("css selector", '.base-search-card__title')[i].text
-                    
-                    # The city can be in the same element or nearby, adjust the selector accordingly
-                    city_element = driver.find_elements("css selector", '.job-search-card__location')[i].text
-                    
-                    # Append job data to the list
-                    data.append({
-                        'company': company,
-                        'title': title,
-                        'city': city_element
-                    })
-            except IndexError:
-                print("no")
-        
-            # Create DataFrame from the collected job data
-            job_data = pd.DataFrame(data)
-            
-            st.dataframe(job_data)
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, 'results-context-header__job-count'))
+            )
+
+        except:
+            st.warning("Timed out waiting for page to load")
+            driver.quit()
+
+        job_count_element = driver.find_element(By.CLASS_NAME, 'results-context-header__job-count')
+        job_count_text = job_count_element.text
+        job_count = int(re.sub(r'[^\d]', '', job_count_text))
+
+        data = []  # Initialize a list to store job data
+
+        try:
+            for i in range(job_count):
+                company = driver.find_elements(By.CLASS_NAME, '.base-search-card__subtitle')[i].text
+                title = driver.find_elements(By.CLASS_NAME, '.base-search-card__title')[i].text
+                
+                # The city can be in the same element or nearby, adjust the selector accordingly
+                city_element = driver.find_elements(By.CLASS_NAME, '.job-search-card__location')[i].text
+                
+                # Append job data to the list
+                data.append({
+                    'company': company,
+                    'title': title,
+                    'city': city_element
+                })
+        except IndexError:
+            print("no")
+
+        # Create DataFrame from the collected job data
+        job_data = pd.DataFrame(data)
+
+        st.dataframe(job_data)
         else:
             st.write("No job count found. Check if the page loaded correctly.")
         
