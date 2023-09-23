@@ -1,0 +1,12 @@
+streamlit==1.27.0
+selenium==4.12.0
+webdriver_manager
+plotly==5.17.0
+streamlit-extras==0.3.2
+pandas==2.1.1
+matplotlib==3.8.0
+streamlit-lottie==0.0.5
+PyPDF2==3.0.1
+wordcloud==1.9.2
+langchain==0.0.300
+
