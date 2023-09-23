@@ -27,14 +27,14 @@ if st.button("Search Jobs"):
     url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
     driver_path = os.environ.get('CHROME_DRIVER_PATH', './chromedriver.exe')
     # Use the driver path
-    driver_service = webdriver.Chrome(executable_path=driver_path)
+    #driver_service = webdriver.Chrome(executable_path=driver_path)
     #driver_service = ChromeService(ChromeDriverManager().install())
     
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     
-    driver = webdriver.Chrome(service=driver_service, options=chrome_options)
+    driver = webdriver.Chrome(executable_path=driver_path, options=chrome_options)
     
     driver.implicitly_wait(10)
     driver.get(url1)
