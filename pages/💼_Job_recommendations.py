@@ -32,7 +32,8 @@ if st.button("Search Jobs"):
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     
-    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+    # Set implicit wait to wait for 10 seconds before throwing an exception
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
     #driver = webdriver.Chrome(service=driver_service, options=chrome_options)
     
     driver.implicitly_wait(10)
