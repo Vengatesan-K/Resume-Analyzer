@@ -1,0 +1,304 @@
+import io
+import streamlit as st
+import PyPDF2
+import yaml
+import time
+from streamlit_extras.colored_header import colored_header
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from langchain.llms import OpenAIChat
+from langchain.memory import ConversationBufferMemory
+from langchain import LLMChain, PromptTemplate
+import pandas as pd
+from streamlit_extras.add_vertical_space import add_vertical_space
+from streamlit_lottie import st_lottie
+st.set_page_config(page_title='Resume', layout='wide', page_icon="#")
+with st.sidebar:
+  st_lottie("https://lottie.host/d08859ec-b1b9-4c81-b0d3-a54b37de4485/tEZ00UNjDR.json")
+  
+def extract_text_from_binary(file):
+    pdf_data = io.BytesIO(file)
+    reader = PyPDF2.PdfReader(pdf_data)
+    num_pages = len(reader.pages)
+    text = ""
+
+    for page in range(num_pages):
+        current_page = reader.pages[page]
+        text += current_page.extract_text()
+    return text
+
+def format_resume_to_yaml(resume):
+    # Define your YAML template
+    template = """
+    Format the provided resume to this YAML template:
+    ---
+    name: ''
+    phoneNumbers:
+    - ''
+    websites:
+    - ''
+    emails:
+    - ''
+    dateOfBirth: ''
+    achievements:
+    - ''
+    projects:
+    - ''
+    addresses:
+    - street: ''
+      city: ''
+      state: ''
+      zip: ''
+      country: ''
+    summary: ''
+    education:
+    - school: ''
+      degree: ''
+      fieldOfStudy: ''
+      startDate: ''
+      endDate: ''
+    workExperience:
+    - company: ''
+      position: ''
+      startDate: ''
+      endDate: ''
+    skills:
+    -  ''
+    certifications:
+    -  ''
+    {chat_history}
+    {human_input}"""
+
+    # Define the prompt
+    prompt = PromptTemplate(
+        input_variables=["chat_history", "human_input"],
+        template=template
+    )
+
+    memory = ConversationBufferMemory(memory_key="chat_history")
+
+    llm_chain = LLMChain(
+        llm=OpenAIChat(model="gpt-3.5-turbo",openai_api_key='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'),
+        prompt=prompt,
+        verbose=True,
+        memory=memory,
+    )
+
+    # Predict using the LLM chain
+    res = llm_chain.predict(human_input=resume)
+    parsed_resume = yaml.safe_load(res)
+    formatted_resume_df = pd.json_normalize(parsed_resume)
+
+    return formatted_resume_df
+
+# Streamlit UI
+
+colored_header(
+    label="Resume  Analyzer",
+    description="This application is crafted to autonomously assess and appraise resumes submitted by job seekers.",
+    color_name="red-70",
+)
+
+uploaded_file = st.file_uploader("Choose a Resume-PDF file", type="pdf")
+
+if uploaded_file is not None:
+    st.write("File uploaded successfully.")
+    with st.spinner('Extracting...'):
+                     time.sleep(120)
+    
+    common_data_science_skills = [
+    'Python',
+    'R',
+    'SQL',
+    'Machine Learning',
+    'Data Analysis',
+    'Data Visualization',
+    'Statistics',
+    'Deep Learning',
+    'NLP','Data Wrangling','Aws','Azure','Powerbi','Tableau',
+    'Big Data',
+    'Hadoop',
+    'Spark',
+    'Tableau',
+    'Data Mining','Computer Vision','Cloud Storage'
+]
+    resume_text = extract_text_from_binary(uploaded_file.read())
+
+    # Format the resume to YAML
+    formatted_resume_df = format_resume_to_yaml(resume_text)
+    transposed_resume_df = formatted_resume_df.transpose()
+    st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Formatted Resume :</P>__',
+                unsafe_allow_html=True)
+    st.dataframe(transposed_resume_df,use_container_width=True)
+    add_vertical_space(3)
+    
+    resume_skills = set([skill.lower() for skill in formatted_resume_df['skills'][0]])
+
+    # Identify missing data science skills
+    missing_skills = [skill for skill in common_data_science_skills if skill.lower() not in resume_skills]
+    col1,col2 = st.columns([3,7])
+    with col1:
+     st.warning("Suggested Skills not in your Resume :")
+     st.table(missing_skills)
+     add_vertical_space(3)
+    
+    
+    resume_skills = set([skill.lower() for skill in formatted_resume_df['skills'][0]])
+
+    strengths = resume_skills
+
+    areas_for_improvement = [skill for skill in common_data_science_skills if skill.lower() not in resume_skills]
+
+# Generate the summary report
+    summary_report = {
+    "Strengths": list(strengths),
+    "Areas_for_improvement": areas_for_improvement
+}
+    max_length = max(len(values) for values in summary_report.values())
+
+# Fill lists to make them of equal length
+    summary_report = {k: v + [''] * (max_length - len(v)) for k, v in summary_report.items()}
+
+# Create a DataFrame
+    summary_df = pd.DataFrame(summary_report)
+
+# Transpose the DataFrame
+    #summary_df_transposed = summary_df.transpose()
+    
+# Display the summary report
+    st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Summary Report :</P>__',
+                unsafe_allow_html=True)
+    st.table(summary_df)
+    
+    strengths_text = ' '.join(list(strengths))
+    wordcloud_strengths = WordCloud(width=600, height=300, background_color='white').generate(strengths_text)
+
+# Generate word cloud for areas for improvement
+    areas_for_improvement_text = ' '.join(areas_for_improvement)
+    wordcloud_areas_for_improvement = WordCloud(width=600, height=300, background_color='white').generate(areas_for_improvement_text)
+
+
+    col3,col4 = st.columns([5,5])
+# Display word cloud for strengths
+    with col3:
+     st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Strengths :</P>__',
+                unsafe_allow_html=True)
+     st.image(wordcloud_strengths.to_array(), use_column_width=True)
+    with col4:
+# Display word cloud for areas for improvement
+     st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Areas for Improvement :</P>__',
+                unsafe_allow_html=True) 
+     st.image(wordcloud_areas_for_improvement.to_array(), use_column_width=True)
+     
+     message = """
+            Stay Updated : Keep up with the latest advancements, tools, and methodologies in data science by reading books,
+            academic papers, online blogs, and following reputable sources.
+
+            Machine Learning Concepts : Gain a deep understanding of fundamental machine learning concepts,
+            algorithms, and techniques, including regression, clustering, classification, ensemble methods, and deep learning.
+
+            Dealing with Real Data Challenges : Real-world data is often messy, incomplete, and inconsistent. Real-time projects help individuals learn how to clean, 
+            preprocess, and handle such data, which is a critical aspect of real-world data science work.
+           """
+
+# Split the message into paragraphs
+    paragraphs = message.split('\n\n')
+
+# Display each paragraph within a colored container
+    for idx, paragraph in enumerate(paragraphs):
+    # Define a unique CSS class for each paragraph container
+     class_name = f"paragraph-container-{idx}"
+
+    # Apply a background color based on the paragraph number
+     if idx % 3 == 0:
+        container_style = "background-color: lightblue; padding: 10px; border-radius: 5px;"
+     elif idx % 3 == 1:
+        container_style = "background-color: lightgreen; padding: 10px; border-radius: 5px;"
+     else:
+        container_style = "background-color: lightcoral; padding: 10px; border-radius: 5px;"
+
+    # Display the paragraph within the colored container
+     st.markdown(
+        f'<div class="{class_name}" style="{container_style}">\
+            <b> prerequisites {idx + 1}:</b>\
+            <p>{paragraph}</p>\
+        </div>',
+        unsafe_allow_html=True
+    )
+    
+    def add_details(skill, details):
+      return f"{skill}:\n{details}\n\n"
+
+# Initialize the summary report
+    summary_report = ""
+
+# Check if "Machine Learning" is a missing skill
+    if "Machine Learning" in areas_for_improvement:
+    # Add details for "Machine Learning"
+      ml_details = (
+        "Consider enhancing your understanding and practical skills in Machine Learning. "
+        "Explore topics such as supervised learning, unsupervised learning, "
+        "and model evaluation. Familiarize yourself with popular ML libraries like "
+        "scikit-learn and TensorFlow/Keras for effective implementation."
+    )
+      summary_report += add_details("Machine Learning", ml_details)
+
+# Check if "Deep Learning" is a missing skill
+    if "Deep Learning" in areas_for_improvement:
+    # Add details for "Deep Learning"
+      dl_details = (
+        "To improve your resume, focus on Deep Learning concepts and applications. "
+        "Deepen your understanding of neural networks, convolutional neural networks (CNNs), "
+        "recurrent neural networks (RNNs), and popular deep learning frameworks like TensorFlow "
+        "and PyTorch. Explore projects and courses related to deep learning for hands-on experience."
+    )
+      summary_report += add_details("Deep Learning", dl_details)
+      
+    if "Data Analysis" in areas_for_improvement:
+    # Add details for "Data Analysis"
+      data_analysis_details = (
+        "Enhance your data analysis skills by practicing data wrangling, data cleaning, and "
+        "statistical analysis. Learn to work with various data formats and use libraries like "
+        "Pandas and NumPy for efficient data manipulation and analysis."
+    )
+      summary_report += add_details("Data Analysis", data_analysis_details)
+      
+    if "Computer Vision" in areas_for_improvement:  
+     cv_details =  (
+        "For a well-rounded skill set, delve into Computer Vision. Study algorithms and techniques "
+        "used for image and video analysis. Familiarize yourself with Convolutional Neural Networks (CNNs), "
+        "object detection, image segmentation, and image classification. Work on projects related to computer vision."
+    )
+     summary_report += add_details("Computer Vision", cv_details)
+     
+    if "NLP" in areas_for_improvement:  
+     nlp_details =  (
+        "Expand your skill set to include Natural Language Processing (NLP). Study methods and techniques for "
+        "processing and analyzing text data. Learn about sentiment analysis, named entity recognition, machine "
+        "translation, and topic modeling. Experiment with NLP libraries like NLTK, spaCy, and transformers."
+     )
+     summary_report += add_details("NLP", nlp_details) 
+ 
+# Check if "Data Visualization" is a missing skill
+    if "Data Visualization" in areas_for_improvement:
+    # Add details for "Data Visualization"
+      data_viz_details = (
+        "Improve your data visualization skills by learning to present data in an effective and "
+        "engaging manner. Explore popular visualization libraries such as Matplotlib, Seaborn, and "
+        "Plotly. Practice creating various types of visualizations to convey insights from data."
+    )
+      summary_report += add_details("Data Visualization", data_viz_details)
+      
+    if "Cloud Storage"  in areas_for_improvement: 
+      cloud_details = (
+        "Familiarize yourself with cloud storage solutions such as Amazon S3, Google Cloud Storage, or Azure "
+        "Blob Storage. Learn how to store and manage data in the cloud efficiently. Understand concepts like buckets, "
+        "objects, access control, and cost optimization related to cloud storage."
+    )
+      summary_report += add_details("Cloud Storage",cloud_details)
+
+# Display the summary report with detailed paragraphs
+    with col2:
+     st.subheader("Detailed Areas for Improvement :")
+     st.write(summary_report)
+     
