@@ -26,12 +26,12 @@ job_keywords = st.text_input("Job Keywords", "Data Scientist")
 if st.button("Search Jobs"):
     url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
     #driver_service = ChromeService(ChromeDriverManager().install())
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+   
     
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
-    
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
     #driver = webdriver.Chrome(service=driver_service, options=chrome_options)
     
     driver.implicitly_wait(10)
