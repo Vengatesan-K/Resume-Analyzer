@@ -21,17 +21,16 @@ colored_header(
     description="Select job location and keywords:",
     color_name="red-70",
 )
+@st.cache_resource
+  def installff():
+    os.system('sbase install geckodriver')
+    os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
 
 location = st.text_input("Country",'India')  # Add more locations as needed
 job_keywords = st.text_input("Job Keywords", "Data Scientist")
 
 if st.button("Scrape Jobs"):
-  url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
-  @st.cache_resource
-  def installff():
-    os.system('sbase install geckodriver')
-    os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
-
+    url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
     _ = installff()
     opts = FirefoxOptions()
     opts.add_argument("--headless")
