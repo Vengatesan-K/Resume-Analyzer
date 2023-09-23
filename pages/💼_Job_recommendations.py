@@ -25,7 +25,7 @@ job_keywords = st.text_input("Job Keywords", "Data Scientist")
 
 if st.button("Search Jobs"):
     url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
-    driver_path = './chromedriver.exe'
+    driver_path = 'pages/chromedriver.exe'
     # Use the driver path
     #driver_service = webdriver.Chrome(executable_path=driver_path)
     #driver_service = ChromeService(ChromeDriverManager().install())
