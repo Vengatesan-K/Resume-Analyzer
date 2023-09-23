@@ -9,6 +9,7 @@ from streamlit_extras.colored_header import colored_header
 import pandas as pd
 import matplotlib.pyplot as plt
 import re
+import os
 from streamlit_lottie import st_lottie
 st.set_page_config(page_title='Resume', layout='wide', page_icon="#")
 with st.sidebar:
@@ -24,8 +25,10 @@ job_keywords = st.text_input("Job Keywords", "Data Scientist")
 
 if st.button("Search Jobs"):
     url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
-    
-    driver_service = ChromeService(ChromeDriverManager().install())
+    driver_path = os.environ.get('CHROME_DRIVER_PATH', './chromedriver.exe')
+    # Use the driver path
+    driver_service = webdriver.Chrome(executable_path=driver_path)
+    #driver_service = ChromeService(ChromeDriverManager().install())
     
     chrome_options = Options()
     chrome_options.add_argument("--headless")
