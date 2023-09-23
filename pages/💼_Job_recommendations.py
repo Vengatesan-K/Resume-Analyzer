@@ -27,15 +27,12 @@ if st.button("Scrape Jobs"):
     url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
     
     # Use webdriver_manager to automatically handle the correct version of ChromeDriver
-    driver_service = ChromeService(ChromeDriverManager().install())
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     
     # Configure Chrome options for headless mode
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
-    
-    # Start the headless Chrome browser
-    driver = webdriver.Chrome(service=driver_service, options=chrome_options)
     
     driver.implicitly_wait(10)
     driver.get(url1)
@@ -66,10 +63,10 @@ if st.button("Scrape Jobs"):
                 })
         except IndexError:
             print("no")
-
+    
         # Create DataFrame from the collected job data
         job_data = pd.DataFrame(data)
-        
+  
         st.dataframe(job_data,use_container_width=True)
         
         city_counts = job_data['city'].value_counts()
