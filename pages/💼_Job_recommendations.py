@@ -42,7 +42,7 @@ if st.button("Scrape Jobs"):
     options = Options()
     options.add_argument('--disable-gpu')
     options.add_argument('--headless')
-    
+    st.code(driver.page_source)
     with get_driver() as driver:
         driver.get(url)
         time.sleep(5)
