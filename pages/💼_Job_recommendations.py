@@ -4,6 +4,9 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 import time
+import os, sys
+from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
 import plotly.express as px
 from streamlit_extras.colored_header import colored_header
 import pandas as pd
@@ -24,17 +27,28 @@ job_keywords = st.text_input("Job Keywords", "Data Scientist")
 
 if st.button("Scrape Jobs"):
     url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
+    @st.experimental_singleton
+    def installff():
+     os.system('sbase install geckodriver')
+     os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+
+     _ = installff()
+     opts = FirefoxOptions()
+     opts.add_argument("--headless")
+     driver = webdriver.Firefox(options=opts)
+
+     driver.get(url1)
+
+    #driver_service = ChromeService(ChromeDriverManager().install())
     
-    driver_service = ChromeService(ChromeDriverManager().install())
+    #chrome_options = Options()
+    #chrome_options.add_argument("--headless")
+    #chrome_options.add_argument("--disable-gpu")
     
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-gpu")
+    #driver = webdriver.Chrome(service=driver_service, options=chrome_options)
     
-    driver = webdriver.Chrome(service=driver_service, options=chrome_options)
-    
-    driver.implicitly_wait(10)
-    driver.get(url1)
+    #driver.implicitly_wait(10)
+    #driver.get(url1)
     
     time.sleep(5)
     
