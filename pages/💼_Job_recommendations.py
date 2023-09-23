@@ -107,4 +107,4 @@ if st.button("Scrape Jobs"):
 else:
         st.write("No job count found. Check if the page loaded correctly.")
     
-    driver.quit()
+driver.quit()
