@@ -91,9 +91,7 @@ if st.button("Scrape Jobs"):
         job_data = pd.DataFrame(data)
 
         st.dataframe(job_data)
-        else:
-            st.write("No job count found. Check if the page loaded correctly.")
-        
+
         city_counts = job_data['city'].value_counts()
 
         cmap = plt.get_cmap('viridis', len(city_counts))
