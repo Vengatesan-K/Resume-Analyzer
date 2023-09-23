@@ -26,15 +26,16 @@ job_keywords = st.text_input("Job Keywords", "Data Scientist")
 if st.button("Scrape Jobs"):
     url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
     
+    # Use webdriver_manager to automatically handle the correct version of ChromeDriver
+    driver_service = ChromeService(ChromeDriverManager().install())
+    
     # Configure Chrome options for headless mode
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     
-    # Path to the ChromeDriver executable
-    chromedriver_path = "pages/chromedriver"  # Replace with the actual path to chromedriver
-    
-    driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
+    # Start the headless Chrome browser
+    driver = webdriver.Chrome(service=driver_service, options=chrome_options)
     
     driver.implicitly_wait(10)
     driver.get(url1)
