@@ -4,6 +4,9 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 import time
+from selenium.webdriver.chrome.service import Service
+import pandas as pd
+import re
 import plotly.express as px
 from streamlit_extras.colored_header import colored_header
 import pandas as pd
@@ -23,51 +26,58 @@ colored_header(
 location = st.text_input("Country",'India')  # Add more locations as needed
 job_keywords = st.text_input("Job Keywords", "Data Scientist")
 
-if st.button("Scrape Jobs"):
-    url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
-    
-    driver_service = ChromeService(ChromeDriverManager().install())
-    
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-gpu")
-    
-    driver = webdriver.Chrome(service=driver_service, options=chrome_options)
-    
-    driver.implicitly_wait(10)
-    driver.get(url1)
-    
-    time.sleep(5)
-    
-    job_count_elements = driver.find_elements("css selector", ".results-context-header__job-count")
-    if job_count_elements:
-        y = job_count_elements[0].text
-        y = re.sub(r'[^\d]', '', y)
-        n = pd.to_numeric(y)
-        
-        data = []  # Initialize a list to store job data
-        
-        try:
-            for i in range(n):
-                company = driver.find_elements("css selector", '.base-search-card__subtitle')[i].text
-                title = driver.find_elements("css selector", '.base-search-card__title')[i].text
-                
-                # The city can be in the same element or nearby, adjust the selector accordingly
-                city_element = driver.find_elements("css selector", '.job-search-card__location')[i].text
-                
-                # Append job data to the list
-                data.append({
-                    'company': company,
-                    'title': title,
-                    'city': city_element
-                })
-        except IndexError:
-            print("no")
+@st.experimental_singleton
+def get_driver():
+    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-        # Create DataFrame from the collected job data
-        job_data = pd.DataFrame(data)
-  
-        st.dataframe(job_data,use_container_width=True)
+st.title("LinkedIn Job Scraper")
+st.write("Select job location and keywords:")
+
+location = st.text_input("Country")  # Add more locations as needed
+job_keywords = st.text_input("Job Keywords", "Marketing Data Analysis")
+
+if st.button("Scrape Jobs"):
+    url = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
+    
+    options = Options()
+    options.add_argument('--disable-gpu')
+    options.add_argument('--headless')
+    
+    with get_driver() as driver:
+        driver.get(url)
+        time.sleep(5)
+        
+        job_count_elements = driver.find_elements("css selector", ".results-context-header__job-count")
+        if job_count_elements:
+            y = job_count_elements[0].text
+            y = re.sub(r'[^\d]', '', y)
+            n = pd.to_numeric(y)
+            
+            data = []  # Initialize a list to store job data
+            
+            try:
+                for i in range(n):
+                    company = driver.find_elements("css selector", '.base-search-card__subtitle')[i].text
+                    title = driver.find_elements("css selector", '.base-search-card__title')[i].text
+                    
+                    # The city can be in the same element or nearby, adjust the selector accordingly
+                    city_element = driver.find_elements("css selector", '.job-search-card__location')[i].text
+                    
+                    # Append job data to the list
+                    data.append({
+                        'company': company,
+                        'title': title,
+                        'city': city_element
+                    })
+            except IndexError:
+                print("no")
+        
+            # Create DataFrame from the collected job data
+            job_data = pd.DataFrame(data)
+            
+            st.dataframe(job_data)
+        else:
+            st.write("No job count found. Check if the page loaded correctly.")
         
         city_counts = job_data['city'].value_counts()
 
