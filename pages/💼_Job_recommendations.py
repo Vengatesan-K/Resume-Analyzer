@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+from pyvirtualdisplay import Display
 import time
 import plotly.express as px
 from streamlit_extras.colored_header import colored_header
@@ -26,18 +27,19 @@ job_keywords = st.text_input("Job Keywords", "Data Scientist")
 if st.button("Scrape Jobs"):
     url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
     
-    driver_service = ChromeService(ChromeDriverManager().install())
-    
+    # Configure Chrome options for headless mode
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     
-    driver = webdriver.Chrome(service=driver_service, options=chrome_options)
-    
-    driver.implicitly_wait(10)
-    driver.get(url1)
-    
-    time.sleep(5)
+    # Use a virtual display
+    with Display():
+        driver = webdriver.Chrome(options=chrome_options)
+        
+        driver.implicitly_wait(10)
+        driver.get(url1)
+        
+        time.sleep(5)
     
     job_count_elements = driver.find_elements("css selector", ".results-context-header__job-count")
     if job_count_elements:
