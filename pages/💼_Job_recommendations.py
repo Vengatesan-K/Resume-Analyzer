@@ -32,7 +32,9 @@ if st.button("Search Jobs"):
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     
-    driver = webdriver.Chrome(service=driver_service, options=chrome_options)
+    chromedriver_path = '/path/to/your/repository/drivers/chromedriver'
+    driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
+
     
     driver.implicitly_wait(10)
     driver.get(url1)
