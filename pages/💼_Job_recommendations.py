@@ -3,7 +3,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
-from PyVirtualDisplay import Display
 import time
 import plotly.express as px
 from streamlit_extras.colored_header import colored_header
