@@ -32,14 +32,15 @@ if st.button("Scrape Jobs"):
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     
-    # Use a virtual display
-    with Display():
-        driver = webdriver.Chrome(options=chrome_options)
-        
-        driver.implicitly_wait(10)
-        driver.get(url1)
-        
-        time.sleep(5)
+    # Path to the ChromeDriver executable
+    chromedriver_path = "pages/chromedriver"  # Replace with the actual path to chromedriver
+    
+    driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
+    
+    driver.implicitly_wait(10)
+    driver.get(url1)
+    
+    time.sleep(5)
     
     job_count_elements = driver.find_elements("css selector", ".results-context-header__job-count")
     if job_count_elements:
