@@ -22,7 +22,7 @@ colored_header(
     color_name="red-70",
 )
 @st.cache_resource
-  def installff():
+def installff():
     os.system('sbase install geckodriver')
     os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
 
