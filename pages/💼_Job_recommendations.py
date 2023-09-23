@@ -104,7 +104,7 @@ if st.button("Scrape Jobs"):
         fig.update_layout(xaxis_tickangle=-45)
 
         st.plotly_chart(fig, use_container_width=True)
-    else:
+else:
         st.write("No job count found. Check if the page loaded correctly.")
     
     driver.quit()
