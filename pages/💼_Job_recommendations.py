@@ -4,24 +4,11 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 import time
-from selenium.webdriver.chrome.service import Service
-import pandas as pd
-import re
-import streamlit as st
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-import pandas as pd
-import re
 import plotly.express as px
 from streamlit_extras.colored_header import colored_header
 import pandas as pd
 import matplotlib.pyplot as plt
 import re
-import os
 from streamlit_lottie import st_lottie
 st.set_page_config(page_title='Resume', layout='wide', page_icon="#")
 with st.sidebar:
@@ -35,48 +22,37 @@ colored_header(
 location = st.text_input("Country",'India')  # Add more locations as needed
 job_keywords = st.text_input("Job Keywords", "Data Scientist")
 
-@st.experimental_singleton
-def get_driver():
-    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
-st.title("LinkedIn Job Scraper")
-st.write("Select job location and keywords:")
-
-location = st.text_input("Country")  # Add more locations as needed
-job_keywords = st.text_input("Job Keywords", "Marketing Data Analysis")
-
 if st.button("Scrape Jobs"):
-    url = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
+    url1 = f'https://www.linkedin.com/jobs/search?keywords={job_keywords}&location={location}&trk=public_jobs_jobs-search-bar_search-submit'
     
-    options = Options()
-    options.add_argument('--disable-gpu')
-    options.add_argument('--headless')
+    driver_service = ChromeService(ChromeDriverManager().install())
     
-    with webdriver.Chrome(ChromeDriverManager().install(), options=options) as driver:
-        driver.get(url)
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    
+    driver = webdriver.Chrome(service=driver_service, options=chrome_options)
+    
+    driver.implicitly_wait(10)
+    driver.get(url1)
+    
+    time.sleep(5)
+    
+    job_count_elements = driver.find_elements("css selector", ".results-context-header__job-count")
+    if job_count_elements:
+        y = job_count_elements[0].text
+        y = re.sub(r'[^\d]', '', y)
+        n = pd.to_numeric(y)
+        
+        data = []  # Initialize a list to store job data
         
         try:
-            WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, 'results-context-header__job-count'))
-            )
-
-        except:
-            st.warning("Timed out waiting for page to load")
-            driver.quit()
-
-        job_count_element = driver.find_element(By.CLASS_NAME, 'results-context-header__job-count')
-        job_count_text = job_count_element.text
-        job_count = int(re.sub(r'[^\d]', '', job_count_text))
-
-        data = []  # Initialize a list to store job data
-
-        try:
-            for i in range(job_count):
-                company = driver.find_elements(By.CLASS_NAME, '.base-search-card__subtitle')[i].text
-                title = driver.find_elements(By.CLASS_NAME, '.base-search-card__title')[i].text
+            for i in range(n):
+                company = driver.find_elements("css selector", '.base-search-card__subtitle')[i].text
+                title = driver.find_elements("css selector", '.base-search-card__title')[i].text
                 
                 # The city can be in the same element or nearby, adjust the selector accordingly
-                city_element = driver.find_elements(By.CLASS_NAME, '.job-search-card__location')[i].text
+                city_element = driver.find_elements("css selector", '.job-search-card__location')[i].text
                 
                 # Append job data to the list
                 data.append({
@@ -89,9 +65,9 @@ if st.button("Scrape Jobs"):
 
         # Create DataFrame from the collected job data
         job_data = pd.DataFrame(data)
-
-        st.dataframe(job_data)
-
+        
+        st.dataframe(job_data,use_container_width=True)
+        
         city_counts = job_data['city'].value_counts()
 
         cmap = plt.get_cmap('viridis', len(city_counts))
@@ -104,7 +80,7 @@ if st.button("Scrape Jobs"):
         fig.update_layout(xaxis_tickangle=-45)
 
         st.plotly_chart(fig, use_container_width=True)
-else:
+    else:
         st.write("No job count found. Check if the page loaded correctly.")
     
-driver.quit()
+    driver.quit()
