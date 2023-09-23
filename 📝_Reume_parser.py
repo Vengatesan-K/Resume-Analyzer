@@ -2,6 +2,7 @@ import io
 import streamlit as st
 import PyPDF2
 import yaml
+import os
 import time
 from streamlit_extras.colored_header import colored_header
 from wordcloud import WordCloud
