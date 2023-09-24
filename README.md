@@ -4,7 +4,7 @@
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://resumepars.streamlit.app/)
 
-# How to use this application
+## How to use this application
      1.Click on the "Open in Streamlit" button located above.
      2.Navigate to the main page and upload your resume in PDF format.
      3.Please wait for a few minutes as the processing may take some time.
