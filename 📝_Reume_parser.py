@@ -149,7 +149,7 @@ if uploaded_file is not None:
 # Create a Streamlit table to display the data
     st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Work Experience :</P>__',
                 unsafe_allow_html=True)
-    st.table(pd.DataFrame({'Company': companies, 'Position': positions}))
+    st.dataframe(pd.DataFrame({'Company': companies, 'Position': positions}))
     add_vertical_space(1)
     
     resume_skills = set([skill.lower() for skill in formatted_resume_df['Skills'][0]])
