@@ -143,7 +143,7 @@ if uploaded_file is not None:
 
     # Identify missing data science skills
     missing_skills = [skill for skill in common_data_science_skills if skill.lower() not in resume_skills]
-    col1,col2 = st.columns([3,7])
+    col1,col2 = st.columns([4,6])
     with col1:
      keywords = st_tags(label='Suggested Skills not in your Resume :',
                                    value=areas_for_improvement, key='1')
