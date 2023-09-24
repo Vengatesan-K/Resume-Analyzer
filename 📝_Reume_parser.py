@@ -133,6 +133,24 @@ if uploaded_file is not None:
                 unsafe_allow_html=True)
     st.dataframe(transposed_resume_df,use_container_width=True)
     add_vertical_space(3)
+
+    work_experience_data = formatted_resume_df['WorkExperience'].iloc[0]
+
+    companies = []
+    positions = []
+
+# Iterate through each dictionary entry and extract data
+    for i, entry in enumerate(work_experience_data, 1):
+     company = entry['company']
+     position = entry['position']
+     companies.append(f'Company{i}: {company}')
+     positions.append(f'Position{i}: {position}')
+
+# Create a Streamlit table to display the data
+    st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Work Experience :</P>__',
+                unsafe_allow_html=True)
+    st.table(pd.DataFrame({'Company': companies, 'Position': positions}))
+    add_vertical_space(1)
     
     resume_skills = set([skill.lower() for skill in formatted_resume_df['Skills'][0]])
   
