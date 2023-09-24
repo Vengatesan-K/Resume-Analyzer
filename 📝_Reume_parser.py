@@ -33,39 +33,39 @@ def format_resume_to_yaml(resume):
     template = """
     Format the provided resume to this YAML template:
     ---
-    name: ''
-    phoneNumbers:
+    Name: ''
+    PhoneNumbers:
     - ''
-    websites:
+    Websites:
     - ''
-    emails:
+    Emails:
     - ''
-    dateOfBirth: ''
-    achievements:
+    DateOfBirth: ''
+    Achievements:
     - ''
-    projects:
+    Projects:
     - ''
-    addresses:
+    Addresses:
     - street: ''
       city: ''
       state: ''
       zip: ''
       country: ''
-    summary: ''
-    education:
+    Summary: ''
+    Education:
     - school: ''
       degree: ''
       fieldOfStudy: ''
       startDate: ''
       endDate: ''
-    workExperience:
+    WorkExperience:
     - company: ''
       position: ''
       startDate: ''
       endDate: ''
-    skills:
+    Skills:
     -  ''
-    certifications:
+    Certifications:
     -  ''
     {chat_history}
     {human_input}"""
@@ -133,22 +133,25 @@ if uploaded_file is not None:
     st.dataframe(transposed_resume_df,use_container_width=True)
     add_vertical_space(3)
     
-    resume_skills = set([skill.lower() for skill in formatted_resume_df['skills'][0]])
+    resume_skills = set([skill.lower() for skill in formatted_resume_df['Skills'][0]])
+  
+    resume_skills1 = [skill for skill in resume_skills]
+
+    strengths = resume_skills
+
+    areas_for_improvement = [skill for skill in common_data_science_skills if skill.lower() not in resume_skills]
 
     # Identify missing data science skills
     missing_skills = [skill for skill in common_data_science_skills if skill.lower() not in resume_skills]
     col1,col2 = st.columns([3,7])
     with col1:
-     st.warning("Suggested Skills not in your Resume :")
-     st.table(missing_skills)
+     keywords = st_tags(label='Suggested Skills not in your Resume :',
+                                   value=areas_for_improvement, key='1')
+     keywords = st_tags(label='Skills in your Resume :',
+                                   value=resume_skills1, key='2')
+     #st.warning("Suggested Skills not in your Resume :")
+     #st.table(missing_skills)
      add_vertical_space(3)
-    
-    
-    resume_skills = set([skill.lower() for skill in formatted_resume_df['skills'][0]])
-
-    strengths = resume_skills
-
-    areas_for_improvement = [skill for skill in common_data_science_skills if skill.lower() not in resume_skills]
 
 # Generate the summary report
     summary_report = {
