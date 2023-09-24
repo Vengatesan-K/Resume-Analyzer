@@ -105,7 +105,7 @@ uploaded_file = st.file_uploader("Choose a Resume-PDF file", type="pdf")
 
 if uploaded_file is not None:
     st.write("File uploaded successfully.")
-    with st.spinner('Extracting...'):
+    with st.spinner('Wait a moment...'):
                      time.sleep(130)
     
     common_data_science_skills = [
