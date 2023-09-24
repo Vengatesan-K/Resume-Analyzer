@@ -6,6 +6,7 @@ import os
 import time
 from streamlit_extras.colored_header import colored_header
 from wordcloud import WordCloud
+from streamlit_tags import st_tags
 import matplotlib.pyplot as plt
 from langchain.llms import OpenAIChat
 from langchain.memory import ConversationBufferMemory
