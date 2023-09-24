@@ -4,13 +4,13 @@ Resume analyzer application is a tool designed to review and evaluate resumes su
 ```
 
  ## Features :
-- [x] Resume Parsing : The application should be able to extract information from resumes, including personal details, contact information, education, work experience, skills, and certifications. 
+- [x] __Resume Parsing__ : The application should be able to extract information from resumes, including personal details, contact information, education, work experience, skills, and certifications. 
   
-- [x] Keyword Matching : The application can match keywords and key phrases in the resume against a predefined list of skills and qualifications relevant to the job posting. It helps identify if the applicant possesses the required skills.
+- [x] __Keyword Matching__ : The application can match keywords and key phrases in the resume against a predefined list of skills and qualifications relevant to the job posting. It helps identify if the applicant possesses the required skills.
 
-- [x]  Format Analysis : It assesses the formatting and layout of the resume, checking for consistency, readability, and adherence to standard resume guidelines. For example, it may check for proper use of headings, bullet points, and fonts.
+- [x]  __Format Analysis__ : It assesses the formatting and layout of the resume, checking for consistency, readability, and adherence to standard resume guidelines. For example, it may check for proper use of headings, bullet points, and fonts.
   
-- [x]  Job recommendation system : That provide personalized job suggestions based on a candidate's skills and qualifications can be valuable tools for both job seekers and employers. 
+- [x]  __Job recommendation system__ : That provide personalized job suggestions based on a candidate's skills and qualifications can be valuable tools for both job seekers and employers. 
 
 ## Tools and libraries used for this project :
 
