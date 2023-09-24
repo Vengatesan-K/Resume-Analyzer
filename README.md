@@ -1,7 +1,8 @@
 # Resume-Analyzer
-```
-Resume analyzer application is a tool designed to review and evaluate resumes submitted by job applicants.
-```
+
+> Resume analyzer application is a tool designed to review and evaluate resumes submitted by job applicants.
+
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://resumepars.streamlit.app/)
 
  ## Features :
 - [x] __Resume Parsing__ : The application should be able to extract information from resumes, including personal details, contact information, education, work experience, skills, and certifications. 
