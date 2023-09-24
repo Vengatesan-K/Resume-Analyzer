@@ -4,6 +4,16 @@
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://resumepars.streamlit.app/)
 
+# How to use this application
+     1.Click on the "Open in Streamlit" button located above.
+     2.Navigate to the main page and upload your resume in PDF format.
+     3.Please wait for a few minutes as the processing may take some time.
+     4.In case you come across any errors, such as parser or scanner issues, just restart the application and wait for a moment.
+     5.Once your resume has been successfully extracted, you can review the summarized content.
+     6.Scroll down to see the suggested skills and experience.
+     7.Next, access the navigation menu and select the "Job Recommendations" page.
+     8.Search for job opportunities based on your skills and preferred locations.
+     
  ## Features :
 - [x] __Resume Parsing__ : The application should be able to extract information from resumes, including personal details, contact information, education, work experience, skills, and certifications. 
   
