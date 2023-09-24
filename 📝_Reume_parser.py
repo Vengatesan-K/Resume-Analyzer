@@ -4,6 +4,7 @@ import PyPDF2
 import yaml
 import os
 import time
+import plotly.graph_objs as go
 from streamlit_extras.colored_header import colored_header
 from wordcloud import WordCloud
 from streamlit_tags import st_tags
@@ -41,7 +42,6 @@ def format_resume_to_yaml(resume):
     - ''
     Emails:
     - ''
-    DateOfBirth: ''
     Achievements:
     - ''
     Projects:
@@ -189,9 +189,56 @@ if uploaded_file is not None:
     #summary_df_transposed = summary_df.transpose()
     
 # Display the summary report
-    st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Summary Report :</P>__',
+    #st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Summary Report :</P>__',
                 unsafe_allow_html=True)
-    st.table(summary_df)
+    #st.table(summary_df)
+    data = {
+    'Topic': [
+        "Educational Background",
+        "Technical Skills",
+        "Data Handling and Analysis",
+        "Machine Learning and AI",
+        "Data Storytelling and Communication",
+        "Domain Knowledge",
+        "Problem-Solving and Innovation",
+        "Project Experience",
+        "Research and Publications (for research-oriented roles)",
+        "Continuous Learning",
+        "Soft Skills",
+    ],
+    'Common Expectations/Qualifications': [
+        "Bachelor's or advanced degree in related field",
+        "Programming proficiency in Python or R; knowledge of data manipulation libraries and machine learning frameworks",
+        "Data collection, cleaning, preprocessing, and statistical analysis; feature engineering",
+        "Building and deploying machine learning models; deep learning knowledge for specific roles",
+        "Effective communication skills; data visualization",
+        "Familiarity with industry/domain; understanding of specific challenges",
+        "Strong problem-solving and creative thinking",
+        "Experience completing data science or AI projects; collaboration skills",
+        "Research publications for research-oriented roles",
+        "Staying updated with the latest developments",
+        "Analytical thinking, adaptability, teamwork, time management",
+    ]
+}
+
+# Create a DataFrame from the data
+    df = pd.DataFrame(data)
+    headerColor = 'grey'
+    rowEvenColor = 'lightgrey'
+    rowOddColor = 'white'
+# Create a Plotly table
+    table = go.Figure(data=[go.Table(
+    header=dict(values=["Topic", "Common Expectations/Qualifications"],line_color='darkslategray',
+                fill_color=headerColor,align='center',font=dict(color='white', size=12)),
+    cells=dict(values=[df['Topic'], df['Common Expectations/Qualifications']],line_color='darkslategray',font = dict(color = 'darkslategray', size = 10),
+            fill_color = [[rowOddColor,rowEvenColor,rowOddColor, rowEvenColor,rowOddColor, rowEvenColor,rowOddColor, rowEvenColor,rowOddColor,rowEvenColor,rowOddColor]*11],align='left'))
+])
+
+# Set the table layout
+    table.update_layout(title="Expectations and Qualifications in Data Science")
+
+# Streamlit
+    st.plotly_chart(table,use_container_width=True)
     
     strengths_text = ' '.join(list(strengths))
     wordcloud_strengths = WordCloud(width=600, height=300, background_color='white').generate(strengths_text)
