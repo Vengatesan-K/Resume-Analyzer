@@ -190,7 +190,7 @@ if uploaded_file is not None:
     
 # Display the summary report
     #st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Summary Report :</P>__',
-                unsafe_allow_html=True)
+                #unsafe_allow_html=True)
     #st.table(summary_df)
     data = {
     'Topic': [
