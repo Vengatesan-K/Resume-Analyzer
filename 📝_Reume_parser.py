@@ -291,6 +291,7 @@ if uploaded_file is not None:
         container_style = "background-color: lightcoral; padding: 10px; border-radius: 5px;"
 
     # Display the paragraph within the colored container
+     add_vertical_space(2)
      st.markdown(
         f'<div class="{class_name}" style="{container_style}">\
             <b> prerequisites {idx + 1}:</b>\
