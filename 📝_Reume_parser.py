@@ -78,7 +78,7 @@ def format_resume_to_yaml(resume):
     )
 
     memory = ConversationBufferMemory(memory_key="chat_history")
-    openai_api_key = st.secrets['OPENAI_API_KEY']
+    openai_api_key = os.environ.get['OPENAI_API_KEY']
     llm_chain = LLMChain(
         llm=OpenAIChat(model="gpt-3.5-turbo",openai_api_key=openai_api_key),
         prompt=prompt,
