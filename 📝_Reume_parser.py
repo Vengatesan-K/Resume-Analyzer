@@ -128,7 +128,9 @@ if uploaded_file is not None:
 
     # Format the resume to YAML
     formatted_resume_df = format_resume_to_yaml(resume_text)
-    transposed_resume_df = formatted_resume_df.transpose()
+    transposed_resume_df = formatted_resume_df.transpose().reset_index()
+# Rename the columns to 'Details' and 'Values'
+    transposed_resume_df.columns = ['Details', 'Values']
     st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Formatted Resume :</P>__',
                 unsafe_allow_html=True)
     st.dataframe(transposed_resume_df,use_container_width=True)
@@ -150,7 +152,7 @@ if uploaded_file is not None:
     st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Work Experience :</P>__',
                 unsafe_allow_html=True)
     st.dataframe(pd.DataFrame({'Company': companies, 'Position': positions}),use_container_width=True)
-    add_vertical_space(1)
+    add_vertical_space(2)
     
     resume_skills = set([skill.lower() for skill in formatted_resume_df['Skills'][0]])
   
@@ -235,7 +237,7 @@ if uploaded_file is not None:
 ])
 
 # Set the table layout
-    table.update_layout(title="Expectations and Qualifications in Data Science")
+    table.update_layout(title="Expectations and Qualifications in Data Science :")
 
 # Streamlit
     st.plotly_chart(table,use_container_width=True)
@@ -259,6 +261,7 @@ if uploaded_file is not None:
      st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Areas for Improvement :</P>__',
                 unsafe_allow_html=True) 
      st.image(wordcloud_areas_for_improvement.to_array(), use_column_width=True)
+     add_vertical_space(2)
      
      message = """
             Stay Updated : Keep up with the latest advancements, tools, and methodologies in data science by reading books,
