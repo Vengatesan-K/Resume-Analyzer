@@ -18,7 +18,7 @@ from streamlit_lottie import st_lottie
 st.set_page_config(page_title='Resume', layout='wide', page_icon="#")
 with st.sidebar:
   st_lottie("https://lottie.host/d08859ec-b1b9-4c81-b0d3-a54b37de4485/tEZ00UNjDR.json")
-  
+@st.cache_data
 def extract_text_from_binary(file):
     pdf_data = io.BytesIO(file)
     reader = PyPDF2.PdfReader(pdf_data)
@@ -29,7 +29,7 @@ def extract_text_from_binary(file):
         current_page = reader.pages[page]
         text += current_page.extract_text()
     return text
-
+@st.cache_data
 def format_resume_to_yaml(resume):
     # Define your YAML template
     template = """
@@ -133,8 +133,7 @@ if uploaded_file is not None:
     transposed_resume_df.columns = ['Details', 'Values']
     st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Formatted Resume :</P>__',
                 unsafe_allow_html=True)
-    st.write(pd.DataFrame(transposed_resume_df))
-    #st.dataframe(transposed_resume_df,use_container_width=True)
+    st.dataframe(transposed_resume_df,use_container_width=True)
     add_vertical_space(3)
 
     work_experience_data = formatted_resume_df['WorkExperience'].iloc[0]
@@ -150,9 +149,9 @@ if uploaded_file is not None:
      positions.append(f'Position{i}: {position}')
 
 # Create a Streamlit table to display the data
-    #st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Work Experience :</P>__',
-                #unsafe_allow_html=True)
-    #st.dataframe(pd.DataFrame({'Company': companies, 'Position': positions}),use_container_width=True)
+    st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Work Experience :</P>__',
+                unsafe_allow_html=True)
+    st.dataframe(pd.DataFrame({'Company': companies, 'Position': positions}),use_container_width=True)
     add_vertical_space(2)
     
     resume_skills = set([skill.lower() for skill in formatted_resume_df['Skills'][0]])
