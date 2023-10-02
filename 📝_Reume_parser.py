@@ -149,9 +149,9 @@ if uploaded_file is not None:
      positions.append(f'Position{i}: {position}')
 
 # Create a Streamlit table to display the data
-    st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Work Experience :</P>__',
-                unsafe_allow_html=True)
-    st.dataframe(pd.DataFrame({'Company': companies, 'Position': positions}),use_container_width=True)
+    #st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Work Experience :</P>__',
+                #unsafe_allow_html=True)
+    #st.dataframe(pd.DataFrame({'Company': companies, 'Position': positions}),use_container_width=True)
     add_vertical_space(2)
     
     resume_skills = set([skill.lower() for skill in formatted_resume_df['Skills'][0]])
