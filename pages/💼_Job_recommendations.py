@@ -81,17 +81,16 @@ if st.button("Scrape Jobs"):
         
         st.dataframe(job_data,use_container_width=True)
         
-        city_counts = job_data['city'].value_counts()
+        city_counts = job_data['city'].value_counts().sort_values(ascending=False)
 
         cmap = plt.get_cmap('viridis', len(city_counts))
         city_colors = [plt.cm.colors.rgb2hex(cmap(i)[:3]) for i in range(len(city_counts))]
 
-        fig = px.bar(x=city_counts.index, y=city_counts.values, color=city_counts.index,
+        fig = px.bar(y=city_counts.index, x=city_counts.values, color=city_counts.index,
              color_discrete_map={city: color for city, color in zip(city_counts.index, city_colors)},
-             labels={'x': 'City', 'y': 'Number of Jobs'}, title='Job Distribution by City')
+             labels={'y': 'City', 'x': 'Number of Jobs'}, title='Job Distribution by City')
 
-        fig.update_layout(xaxis_tickangle=-45)
-
+        fig.update_layout(yaxis=dict(autorange="reversed"))
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.write("No job count found. Check if the page loaded correctly.")
