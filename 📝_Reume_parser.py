@@ -133,7 +133,8 @@ if uploaded_file is not None:
     transposed_resume_df.columns = ['Details', 'Values']
     st.markdown('__<p style="text-align:left; font-size: 20px; color: #1c0000">Formatted Resume :</P>__',
                 unsafe_allow_html=True)
-    st.dataframe(transposed_resume_df,use_container_width=True)
+    st.write(pd.DataFrame(transposed_resume_df))
+    #st.dataframe(transposed_resume_df,use_container_width=True)
     add_vertical_space(3)
 
     work_experience_data = formatted_resume_df['WorkExperience'].iloc[0]
