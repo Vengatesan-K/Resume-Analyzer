@@ -11,7 +11,8 @@ from streamlit_tags import st_tags
 import matplotlib.pyplot as plt
 from langchain.llms import OpenAIChat
 from langchain.memory import ConversationBufferMemory
-from langchain import LLMChain, PromptTemplate
+from langchain.llms import LLMChain
+from langchain.templates import PromptTemplate
 import pandas as pd
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_lottie import st_lottie
