@@ -9,7 +9,7 @@ streamlit-lottie
 PyPDF2
 wordcloud
 langchain
-openai
+openai==0.28
 PyYAML
 lxml
 PyVirtualDisplay
